@@ -51,14 +51,21 @@ def run():
 
     print('Getting data in batches...')
 
+    # 连接influxDB
+    my_influxclient = get_data.DB_api('localhost', 8086)
+
     # Here is a script to get the data in batches and give back the results
     # Recieved data is in JSON format, with attributes {'i':,'voltage':,'current':}
     # For each batch, you produce a result with format {'ts':,'detected':,'event_ts':}
     batchCounter = 0
     feature_index = 0
     while(True):
+        
+        # 获取batchCounter的数据段
+        data = my_influxclient.get_batch(batchCounter)
 
-        data = get_data.get_batch(batchCounter)
+        if data.empty:
+            break
 
         feature_index += 1
 
